@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration debug="false" scan="true" scanPeriod="60 seconds">
+    <appender name="service-and-http"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+
+        <file>./log/adx/gnomeadx.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>
+                ./log/adx/store/gnomeadx/gnomeadx.%d{yyyy-MM-dd-HH}.log
+            </FileNamePattern>
+            <MaxHistory>4</MaxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [ %thread ] [ %p ] [%F::%L] %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="console-printer"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [ %thread ] [ %p ] [%F::%L] %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="req" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="com.kdg.gnome.adx.monitor.RequestLog2">
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+
+        <file>./log/adx/req.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>
+                ./log/adx/store/req/req.%d{yyyy-MM-dd-HH}.log
+            </FileNamePattern>
+            <MaxHistory>4</MaxHistory>
+        </rollingPolicy>
+
+        <encoder></encoder>
+    </appender>
+
+
+
+
+
+
+
+    <logger name="com.kdg" level="DEBUG" additivity="false">
+        <appender-ref ref="service-and-http"/>
+        <appender-ref ref="console-printer"/>
+    </logger>
+
+    <root level="error">
+        <appender-ref ref="service-and-http"/>
+        <appender-ref ref="console-printer"/>
+    </root>
+
+</configuration>

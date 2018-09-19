@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration status="off" monitorInterval="60">
+    <Properties>
+        <!-- 配置日志文件输出目录,此处为项目根目录下的logs文件夹 -->
+        <Property name="LOG_HOME">./log/adx</Property>
+        <property name="FILE_PATH">./log/adx/</property>
+        <property name="LOG_PATTERN">[%d{yyyy-MM-dd HH:mm:ss.SSS}] [ %thread ] [ %p ] [%file:%line] - %m%n</property>
+        <property name="KAFKA_NODE">172.21.0.31:6667,172.21.0.37:6667,172.21.0.27:6667</property>
+    </Properties>
+
+    <appenders>
+        <console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </console>
+
+        <RollingFile name="info" fileName="${LOG_HOME}/gnomeadx.log"
+                     filePattern="${FILE_PATH}/store/gnomeadx/gnomeadx.%d{yyyy-MM-dd-HH}.log">
+            <Filters>
+                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="50 GB"/>
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="OUT_REQ" fileName="${LOG_HOME}/req/out_req.log"
+                     filePattern="${FILE_PATH}/req/out_req.%d{yyyy-MM-dd-HH}.log">
+            <PatternLayout pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="50 GB"/>
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="OUT_IMP" fileName="${LOG_HOME}/imp/out_imp.log"
+                     filePattern="${FILE_PATH}/imp/out_imp.%d{yyyy-MM-dd-HH}.log">
+            <PatternLayout pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="50 GB"/>
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="OUT_CLK" fileName="${LOG_HOME}/clk/out_clk.log"
+                     filePattern="${FILE_PATH}/clk/out_clk.%d{yyyy-MM-dd-HH}.log">
+            <PatternLayout pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="50 GB"/>
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="OUT_TIME" fileName="${LOG_HOME}/time/out_clk.log"
+                     filePattern="${FILE_PATH}/time/out_time.%d{yyyy-MM-dd-HH}.log">
+            <PatternLayout pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="50 GB"/>
+            </Policies>
+        </RollingFile>
+
+        <Kafka name="reqKafka" topic="adx_reqResp_test_006" syncSend="true">
+            <PatternLayout pattern="%message" />
+            <Property name="bootstrap.servers">${KAFKA_NODE}</Property>
+        </Kafka>
+        <Kafka name="monitorKafka" topic="adx_clickImp_test_006" syncSend="true">
+            <PatternLayout pattern="%message" />
+            <Property name="bootstrap.servers">${KAFKA_NODE}</Property>
+        </Kafka>
+
+        <Kafka name="newLogKafka" topic="adx_new_log" syncSend="true">
+            <PatternLayout pattern="%message" />
+            <Property name="bootstrap.servers">${KAFKA_NODE}</Property>
+        </Kafka>
+
+        <Async name="infoAsync">
+            <AppenderRef ref="info"/>
+        </Async>
+        <Async name="reqAsync">
+            <AppenderRef ref="OUT_REQ"/>
+        </Async>
+        <Async name="impAsync">
+            <AppenderRef ref="OUT_IMP"/>
+        </Async>
+        <Async name="clkAsync">
+            <AppenderRef ref="OUT_CLK"/>
+        </Async>
+        <Async name="timeAsync">
+            <AppenderRef ref="OUT_TIME"/>
+        </Async>
+
+        <!--kafka 的异步-->
+        <Async name="reqKafkaAsync">
+            <AppenderRef ref="reqKafka"/>
+        </Async>
+        <Async name="monitorKafkaAsync">
+            <AppenderRef ref="monitorKafka"/>
+        </Async>
+        <Async name="newLogAsync">
+            <AppenderRef ref="newLogKafka"/>
+        </Async>
+
+    </appenders>
+
+    <loggers>
+        <AsyncLogger name="ES_OUT_INFO" level="INFO">
+            <appender-ref ref="infoAsync"/>
+        </AsyncLogger>
+        <AsyncLogger name="ES_OUT_REQ" level="INFO">
+            <appender-ref ref="reqAsync"/>
+        </AsyncLogger>
+        <AsyncLogger name="ES_OUT_IMP" level="INFO">
+            <appender-ref ref="impAsync"/>
+        </AsyncLogger>
+        <AsyncLogger name="ES_OUT_CLK" level="INFO">
+            <appender-ref ref="clkAsync"/>
+        </AsyncLogger>
+        <AsyncLogger name="ES_OUT_TIME" level="INFO">
+            <appender-ref ref="timeAsync"/>
+        </AsyncLogger>
+
+        <!--<AsyncLogger name="REQ_KAFKA" level="INFO">-->
+            <!--<appender-ref ref="reqKafkaAsync"/>-->
+        <!--</AsyncLogger>-->
+        <AsyncLogger name="MONITOR_KAFKA" level="INFO">
+            <appender-ref ref="monitorKafkaAsync"/>
+        </AsyncLogger>
+        <!--<AsyncLogger name="NEW_LOG_KAFKA" level="INFO">-->
+            <!--<appender-ref ref="newLogAsync"/>-->
+        <!--</AsyncLogger>-->
+
+        <AsyncRoot level="info" includeLocation="true">
+            <AppenderRef ref="Console"/>
+
+        </AsyncRoot>
+    </loggers>
+
+</configuration>
