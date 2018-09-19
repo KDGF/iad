@@ -100,6 +100,10 @@ public class AES {
 
 
     System.out.println(new String(Base64.decodeBase64(wifiEncoded)));
+    String plainStr = "GNzSWC_vzGrGRTsc8ObsSA";
+    String keyStr = "6F67C6BC42DF035ABD5F3C61502F23AB";
+
+    System.out.println(AES.decrypt(plainStr, keyStr, true));
 
   }
 }

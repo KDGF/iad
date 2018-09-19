@@ -194,7 +194,7 @@ public class FetchInfoFromDb {
                 String  dealId = rs.getString("deal_id");
                 Double consume = rs.getDouble("consume");
 
-                String adversStr = rs.getString("advertiser_isd");
+                String adversStr = rs.getString("advertiser_ids");
                 if (StringUtils.isNotBlank(adversStr)) {
                     String[] advers = adversStr.split(",");
                     if (advers.length > 0) {
